@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceDBImpl implements ProductService {
@@ -39,24 +40,42 @@ public class ProductServiceDBImpl implements ProductService {
         ProductResponse productResponse = new ProductResponse();
         productResponse.setId(product.getId());
         productResponse.setName(product.getName());
-
-
-
+        productResponse.setPrice(product.getPrice());
+        productResponse.setAmount(product.getAmount());
+        return productResponse;
     }
 
     @Override
     public void deleteProductById(int id) {
+        Optional<Product> productOptional = productReponsitory.findById(id);
+        productOptional.ifPresent(product -> productReponsitory.delete(product));
+    }
+
+    @Override
+    public void updateProduct(ProductRequestUpdateDTO dto) {
+        Product product = productReponsitory.findById(dto.getId()).orElse(null);
+        if(product == null){
+            throw new RuntimeException("Product Not Found!");
+        }
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        product.setAmount(product.getAmount());
+        productReponsitory.save(product);
+    }
+
+    @Override
+    public void addProduct(ProductRequestCreateDTO dto) {
+        Product product = new Product();
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        product.setAmount(product.getAmount());
+        productReponsitory.save(product);
 
     }
 
     @Override
-    public void updateProduct(ProductRequestUpdateDTO product) {
-
-    }
-
-    @Override
-    public void addProduct(ProductRequestCreateDTO product) {
-
+    public Double FindxthLagestNumber(int number) {
+        return productReponsitory.findNthLargestPrice(number - 1);
     }
 }
 

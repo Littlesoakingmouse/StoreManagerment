@@ -12,4 +12,5 @@ public interface ProductService {
     void deleteProductById(int id);
     void updateProduct(ProductRequestUpdateDTO product);
     void addProduct(ProductRequestCreateDTO product);
+    Double FindxthLagestNumber(int number);
 }
